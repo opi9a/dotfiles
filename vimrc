@@ -213,20 +213,25 @@ nmap ,l <Plug>(easymotion-overwin-line)
 map  ,w <Plug>(easymotion-bd-w)
 nmap ,w <Plug>(easymotion-overwin-w)
 
-" x
+" tag lines up / down, and words left / right
 map \h <Plug>(easymotion-linebackward)
-map \j <Plug>(easymotion-j)
-map \k <Plug>(easymotion-k)
+map j <Plug>(easymotion-j)
+map k <Plug>(easymotion-k)
 map \l <Plug>(easymotion-lineforward)
 
-" remap comma
+noremap \j j
+noremap \k k
+
+" remap comma to #
 map # ,
 
-" old stuff
-" map / <Plug>(easymotion-sn)
-" omap / <Plug>(easymotion-tn)
-" map n <Plug>(easymotion-next)
-" map N <Plug>(easymotion-prev)
+" replacing standard search
+map  / <plug>(easymotion-sn)
+omap / <plug>(easymotion-tn)
+
+" - and remap standard search
+noremap \/ /
+
 
 " OTHER 
 set foldmethod=indent " enable folding
@@ -275,7 +280,7 @@ call matchadd('ColorColumn', '\%79v', 100)
 noremap <leader>B :set background=light \|
                   \ highlight FoldColumn ctermbg=bg ctermfg=bg
                   \ <CR>
-                  \ :set nohlsearch <CR>
+                  \ :nohlsearch <CR>
 
 "-----------------
 " NOTES AND ERRATA
