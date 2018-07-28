@@ -18,9 +18,7 @@ call plug#begin('~/.vim/plugged')
 " (run :PlugInstall and they get downloaded etc automatically)
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
-Plug 'tmhedberg/SimpylFold'
 Plug 'vim-scripts/indentpython.vim'
-Plug 'fenetikm/falcon'
 Plug 'vim-airline/vim-airline'
 Plug 'tpope/vim-sensible'    " 
 Plug 'tpope/vim-commentary'  " comment out lines: use gc 
@@ -31,12 +29,11 @@ Plug 'tommcdo/vim-exchange'  " swap words: cx
 Plug 'tommcdo/vim-lion'      " align lines based on a char: gl
 Plug 'nathanaelkane/vim-indent-guides' " highlight indents: <leader>ig
 Plug 'wellle/targets.vim'    " act on parens etc
-Plug 'arcticicestudio/nord-vim'
 Plug 'davidklsn/vim-sialoquent'
 Plug 'machakann/vim-highlightedyank'
-Plug 'wikitopian/hardmode'
 Plug 'easymotion/vim-easymotion'
 Plug 'morhetz/gruvbox'
+Plug 'metakirby5/codi.vim'
 
 " FILESYSTEM
 " Plug 'scrooloose/nerdtree'
@@ -55,7 +52,9 @@ if has('nvim')
 endif
 
 " 
-" Keep jedi as it has other uses, eg <leader>d 
+" Keep jedi as it has other uses, eg
+"  - <leader>d to go to definition
+"  - <leader>r to replace a variable name (in all open buffers)
 Plug 'davidhalter/jedi-vim'
 let g:jedi#completions_enabled = 0  " - to turn it off
 
@@ -110,13 +109,6 @@ au BufNewFile,BufRead *.py
 nnoremap ; :
 nnoremap : ;
  
-
-" search within current viewport, either direction
-nnoremap <silent> z/ :set scrolloff=0<CR>VHoL<Esc>:set scrolloff=1<CR>``/\%V
-
-" toggle relative numbers
-noremap <leader>r :set relativenumber!<CR>
-
 " close buffer without losing split
 command! Bd bp|bd #
 
@@ -178,7 +170,7 @@ set wrap              " lines longer than window get wrapped in display
 set linebreak         " don't break words when wrapping
 set textwidth=0       " turns off breaking lines (with an EOL)
 set scrolloff=4       " scroll before cursor hits end of screen
-set fo-=t             " formatoptions.  Stops auto processing.
+set fo-=t             " formatoptions.  Stops auto processing. 
 
 " set list              " show non whitespace
 " set listchars=tab:▸\ ,eol:¬
@@ -194,33 +186,59 @@ if (has('nvim'))
 endif
 
 " EASYMOTION MAPPINGS
-" - f is all-purpose single char jump
-" - works as a motion for operations (automatically stays in buffer)
+" - space is all-purpose single char jump
+" - works as a motion for operations
+"   - automatically stays in buffer, and will yank / del etc
+"     to *just before* the target
 " - works over multiple buffers for just jumping (because nmap)
-map  ,f <Plug>(easymotion-bd-f)
-nmap ,f <Plug>(easymotion-overwin-f)
+map   <space> <Plug>(easymotion-bd-f) 
+omap  <space> <Plug>(easymotion-bd-t)
+nmap  <space> <Plug>(easymotion-overwin-f)
+
+" - go to beginning and end of all words (useful for operations)
+"   - forward
+map   ,w <Plug>(easymotion-w)
+map   ,W <Plug>(easymotion-W)
+map   ,e <Plug>(easymotion-e)
+map   ,E <Plug>(easymotion-E)
+"   - backward
+map   ,b <Plug>(easymotion-b)
+map   ,B <Plug>(easymotion-B)
+map   ,ge <Plug>(easymotion-ge)
+map   ,gE <Plug>(easymotion-gE)
+
+" single line variants
+map   ,f <Plug>(easymotion-bd-fl)
+map   ,t <Plug>(easymotion-bd-tl)
 
 " two character variants - single buffer
-nmap ,s <Plug>(easymotion-s2)
-" NB t just places cursur before target
-nmap ,T <Plug>(easymotion-t2)
+nmap  ,F <Plug>(easymotion-s2)
+nmap  ,T <Plug>(easymotion-t2)
 
 " lines
-map  ,l <Plug>(easymotion-bd-jk)
-nmap ,l <Plug>(easymotion-overwin-line)
+map   ,l <Plug>(easymotion-bd-jk)
+nmap  ,l <Plug>(easymotion-overwin-line)
 
 " words
-map  ,w <Plug>(easymotion-bd-w)
-nmap ,w <Plug>(easymotion-overwin-w)
+" map   ,w <Plug>(easymotion-bd-w)
+" nmap  ,w <Plug>(easymotion-overwin-w)
 
 " tag lines up / down, and words left / right
-map \h <Plug>(easymotion-linebackward)
-map j <Plug>(easymotion-j)
-map k <Plug>(easymotion-k)
-map \l <Plug>(easymotion-lineforward)
+map  j   <Plug>(easymotion-j)
+map  k   <Plug>(easymotion-k)
 
-noremap \j j
-noremap \k k
+" set so the above maintain cursor columns
+let g:EasyMotion_startofline = 0 
+
+" and make some mappings for going to start of line
+map <Leader>J <Plug>(easymotion-sol-j)
+map <Leader>K <Plug>(easymotion-sol-k)
+
+noremap <Leader>j j
+noremap <Leader>k k
+
+map <Leader>h   <Plug>(easymotion-linebackward)
+map <Leader>l   <Plug>(easymotion-lineforward)
 
 " remap comma to #
 map # ,
@@ -230,7 +248,7 @@ map  / <plug>(easymotion-sn)
 omap / <plug>(easymotion-tn)
 
 " - and remap standard search
-noremap \/ /
+noremap <Leader>/ /
 
 
 " OTHER 
